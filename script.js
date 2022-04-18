@@ -54,6 +54,11 @@ class App {
 
     //retrieve coordinates from mapEvent + set markers at form submit
     _submitForm(e){
+        ////////Form validation
+        const type = inputType.value;
+        const notes = inputNotes.value;
+        const duration = +inputDuration.value;
+        let exercise;
         
         //function to check every input
         const validInput = (...values) =>
@@ -65,28 +70,10 @@ class App {
         const positiveInt = (...values) => 
             (values.every((value) => value > 0))
         e.preventDefault();  
-        
-        //add marker
-        const {lat} = this.mapEvent.latlng;
-        const {lng} = this.mapEvent.latlng;
-        console.log(lat, lng);
-        L.marker([lat, lng]).addTo(this.map)
-        .bindPopup(
-            L.popup({
-                maxWidth: 350,
-            })
-        ).setPopupContent('Popup added')
-        .openPopup();
 
         //Validation messages
         const notInteger = 'Data fields can only contain integers'
         const notPositiveInt = 'Duration and Distance fields must contain positive integers'
-
-        //form validation
-        const type = inputType.value;
-        const notes = inputNotes.value;
-        const duration = +inputDuration.value;
-        let exercise;
 
         //check which data is saved
         if (type === "walk"){
@@ -100,6 +87,7 @@ class App {
             }
 
             exercise = new Walk(distance, duration, notes)
+            console.log(exercise);
         }
 
         if (type === "run" || type === "cycle"){
@@ -123,7 +111,7 @@ class App {
         }
 
         if (type === "sport"){
-            const sportName = inputSport.value
+            const sportName = inputSport.value.toLowerCase();
 
             if (!validInput(duration)){
                 return alert(notInteger)
@@ -139,9 +127,29 @@ class App {
         this.exercises.push(exercise)
         console.log(this.exercises);
 
+        //////////Add marker
+        this._createPopupDescription.bind(this)
+        const {lat} = this.mapEvent.latlng;
+        const {lng} = this.mapEvent.latlng;
+        console.log(lat, lng);
+        L.marker([lat, lng]).addTo(this.map)
+        .bindPopup(
+            L.popup({
+                maxWidth: 350,
+                className: `popup--${type}`
+            })
+        ).setPopupContent(this._createPopupDescription(exercise))
+        .openPopup();
+
+        
+
+
         //Reset + close form
         this._clearFormFields();
-        form.classList.add('hidden')
+        form.classList.add('hidden');
+
+        this._renderExercisePanel(exercise);
+
     }
 
     //Change input fields depending on type of exercise
@@ -183,40 +191,77 @@ class App {
     }
 
     _renderExercisePanel(exercise){
-        const insertObj = exercise;
-
-        form.insertAdjacentElement('afterend', 
+        let htmlContent =  
         `<li>
+        <div class="exercisePanel">
+            <h2>${exercise.emoji} ${this._capitaliseWord(exercise.type)}</h2>
+            <div>
+                <span>📏Dist.: </span>
+                <span>${exercise.distance}</span>
+                <span>km</span>
+            </div>
+            <div>
+                <span>⏲Time: </span>
+                <span>${exercise.duration}</span>
+                <span>min</span>
+            </div>
+            <div>
+                <span>💨Speed</span>
+                <span>${this._calcSpeed(exercise)}</span>
+                <span>km/h</span>
+            </div>`
+
+        if (exercise.type ==='run' || exercise.type ==='cycle'){
+            const elevGainAndSpeed = `
+            <div>
+                <span>🗻Elev.: </span>
+                <span>${exercise.elevation}</span>
+                <span>m</span>
+            </div>`
+
+            htmlContent += elevGainAndSpeed
+        };
+
+        if (exercise.type ==='sport') {
+            htmlContent = 
+            `<li>
             <div class="exercisePanel">
-                <h2>${exercise.type}</h2>
+                <h2>${exercise.emoji} ${this._capitaliseWord(exercise.sportName)}</h2>
                 <div>
-                    <span>⚽</span>
-                    <span>Soccer</span>
-                    <span>km</span>
-                </div>
-                <div>
-                    <span>⌚</span>
+                    <span>⌚Time: </span>
                     <span>${exercise.duration}</span>
                     <span>min</span>
-                </div>
-                <div>
-                    <span>Speed/Pace</span>
-                    <span>5.7</span>
-                    <span>km/min</span>
-                </div>
-                <div>
-                    <span>📝</span>
-                    <span>${exercise.notes}</span>
-                </div>
+                </div>`
+        };
+
+        if (exercise.notes !== ''){
+            htmlContent +=
+            `<div>
+            <span>📝Notes: </span>
+            <span>${exercise.notes}</span>
             </div>
-        </li>
-        `
+            </div>
+            </li>`
+        }
+            
         
-        )
+
+        form.insertAdjacentHTML('afterend', htmlContent);
     }
 
+    _calcSpeed(exercise){
+        return (exercise.distance / (exercise.duration/60)).toFixed(2)
+    }
 
+    _capitaliseWord(string){
+        let capString;
+        return capString = string[0].toUpperCase() + string.slice(1).toLowerCase()
+    }
 
+    _createPopupDescription(exercise){
+        let options = {day:'numeric', month: 'numeric', year: 'numeric', }
+        return `${exercise.emoji} ${(exercise.type==='sport')? this._capitaliseWord(exercise.sportName) : this._capitaliseWord(exercise.type)}, ${exercise.date.toLocaleString('en-GB', options)}`
+    }
 }
 //class objects
 
@@ -231,6 +276,57 @@ date = new Date();
         this.duration = duration;
         this.notes = notes;
     }
+    //Prototype methods for all Class objects to use
+    _getEmoji(exercise){
+        let emoji;
+        switch(exercise){
+            case "walk":
+                emoji = '🚶‍♂️';
+                break;
+            case "run":
+                emoji = '🏃‍♂️'
+                break;
+            case "cycle":
+                emoji = '🚲';
+                break;
+            case "sport":
+                switch(this.sportName){
+                    case "soccer":
+                    case "football":
+                        emoji = '⚽'
+                        break;
+                    case "basketball":
+                        emoji = '🏀';
+                        break;
+                    case "hockey":
+                    emoji = '🏑'
+                        break;
+                    case "tennis":
+                    emoji = '🎾';
+                    break;
+                    case "badminton":
+                        emoji = '🏸'
+                        break;
+                    case "gym":
+                    case "workout":
+                        emoji = '💪';
+                        break;
+                    case "swimming":
+                    case "swim":
+                        emoji = '🏊‍♂️'
+                        break;
+                    default:
+                        emoji = '🏅'
+                        break;
+                }
+                break;
+            default: 
+                emoji = '🏅'
+                break;
+        }
+        return emoji
+    }
+
 }
 
 //Child classes
@@ -239,6 +335,7 @@ class Walk extends Exercise {
     constructor(distance, duration, notes){
         super(duration, notes)
         this.distance = distance;
+        this.emoji = this._getEmoji(this.type)
     }
 
 }
@@ -249,6 +346,7 @@ class Run extends Exercise {
         super(duration, notes)
         this.distance = distance;
         this.elevation = elevation
+        this.emoji = this._getEmoji(this.type)
     }
 
 }
@@ -260,15 +358,17 @@ class Cycle extends Exercise {
         super(duration, notes)
         this.distance = distance;
         this.elevation = elevation
+        this.emoji = this._getEmoji(this.type)
     }
 
 }
 
 class Sport extends Exercise {
     type = 'sport';
-    constructor(duration, sport, notes){
+    constructor(duration, sportName, notes){
         super(duration, notes)
-        this.sport = sport;
+        this.sportName = sportName;
+        this.emoji = this._getEmoji(this.type)
     }
 
 }

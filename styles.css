@@ -24,6 +24,17 @@ body{
     height: 100vh;
     padding: 40px 5px;
 }
+
+.sidebar-container{
+    height: 100%;
+}
+
+footer{
+    justify-content: flex-end;
+    position: absolute;
+    bottom: 0px;
+}
+
 #map{
     height: 100%;
     background-color: grey;
@@ -59,12 +70,52 @@ textarea{
 ul {
     margin: 0
 }
+
+.exercisePanel{
+    border: 1px solid white;
+    padding: 6px;
+    border-radius: 8px;
+    width:80%;
+    margin: 20px auto;
+    box-shadow: 1px 3px 10px 5px rgba(0,0,0,0.5);
+}
+
+.exercisePanel h2{
+    margin-top:0;
+    font-size: 20px;
+}
+
 .hidden{
     display: none
 }
 
 .hide-animate{
     opacity:0
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip{
+    background-color: rgb(32, 32, 32);
+}
+
+.leaflet-popup-content{
+    color: white;
+}
+
+.popup--walk .leaflet-popup-content-wrapper{
+    border-left: 9px solid rgb(46, 46, 198);
+}
+
+.popup--run .leaflet-popup-content-wrapper{
+    border-left: 9px solid rgb(255, 192, 31);
+}
+
+.popup--cycle .leaflet-popup-content-wrapper{
+    border-left: 9px solid rgb(30, 171, 84);
+}
+
+.popup--sport .leaflet-popup-content-wrapper{
+    border-left: 9px solid rgb(159, 38, 38);
 }
 
 @media screen and (max-width:700px) {

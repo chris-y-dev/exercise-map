@@ -19,37 +19,38 @@
 <body>
     <div id="map"></div>
     <section class="sidebar">
-        <ul>
-            <form id="form" class="hidden">
-                <div class="input-row">
-                    <label>Activity: </label>
-                    <select id="inputType">
-                        <option value="walk">Walk</option>
-                        <option value="run">Run</option>
-                        <option value="cycle">Cycle</option>
-                        <option value="sport">Sport</option>
-                    </select>
-                </div>
-                <div class="input-row">
-                    <label>Distance: </label>
-                    <input placeholder="km" id='inputDistance'/>
-                </div>
-                <div class="input-row">
-                    <label>Duration: </label>
-                    <input placeholder="min" id="inputDuration"/>
-                </div>
-                <div class="input-row hidden">
-                    <label>Elev Gain: </label>
-                    <input placeholder="meters" id="inputElevation"/>
-                </div>
-                <div class="input-row hidden">
-                    <label>Sport: </label>
-                    <input placeholder="name" id="inputSport"/>
-                </div>
-                <div class="input-row">
-                    <label>Notes: </label>
-                    <textarea placeholder="Enter note (eg: Took no breaks" id="inputNotes"></textarea>
-                </div>
+        <div class="sidebar-container">
+            <ul>
+                <form id="form" class="hidden">
+                    <div class="input-row">
+                        <label>Activity: </label>
+                        <select id="inputType">
+                            <option value="walk">Walk</option>
+                            <option value="run">Run</option>
+                            <option value="cycle">Cycle</option>
+                            <option value="sport">Sport</option>
+                        </select>
+                    </div>
+                    <div class="input-row">
+                        <label>Distance: </label>
+                        <input placeholder="km" id='inputDistance'/>
+                    </div>
+                    <div class="input-row">
+                        <label>Duration: </label>
+                        <input placeholder="min" id="inputDuration"/>
+                    </div>
+                    <div class="input-row hidden">
+                        <label>Elev Gain: </label>
+                        <input placeholder="meters" id="inputElevation"/>
+                    </div>
+                    <div class="input-row hidden">
+                        <label>Sport: </label>
+                        <input placeholder="name" id="inputSport"/>
+                    </div>
+                    <div class="input-row">
+                        <label>Notes: </label>
+                        <textarea placeholder="Enter note (eg: Took no breaks" id="inputNotes"></textarea>
+                    </div>
                 <button>Add</button>
             </form>
             <!-- INSERT workout blocks here 
@@ -77,10 +78,13 @@
                     </div>
                 </div>
             </li>
-            -->
-            
-        </ul>
-        <p>Created by Chris</p>
+        -->
+        
+    </ul>
+        <footer>
+            <p>Created by Chris</p>
+        </footer>
+    </div>
     </section>
 </body>
 </html>
