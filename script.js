@@ -6,6 +6,7 @@ const inputDistance = document.getElementById('inputDistance')
 const inputNotes = document.getElementById('inputNotes')
 const inputElevation = document.getElementById('inputElevation')
 const inputSport = document.getElementById('inputSport')
+const sidebarContainer = document.getElementById('panels-container')
 //Create App class
 
 ///////////////App logic - Code Architecture
@@ -15,6 +16,7 @@ class App {
     map;
     mapEvent;
     exercises = [];
+    data;
 
     //mandatory constructor - These will be set immediately upon app load
     constructor(){
@@ -23,10 +25,18 @@ class App {
         //set marker at submit form
         form.addEventListener('submit', this._submitForm.bind(this))
         //change for fields depending on type value
-        inputType.addEventListener('change', this._changeForm.bind(this)) 
+        inputType.addEventListener('change', this._changeForm.bind(this))
+        //event listner for exercise panels
+        sidebarContainer.addEventListener('click', this._moveToClickedPanel.bind(this))
+
+        //retrieve data at start from localstorage
+        this._retrieveLocalStorage();
+        this._recreateExerciseObjs();
+        
     }
 
     //methods
+
     _getPosition(){
         if(navigator.geolocation){   
             navigator.geolocation.getCurrentPosition(this._loadMap.bind(this), function(){
@@ -50,6 +60,10 @@ class App {
         
         //Click to create marker on clicked coordinates
         this.map.on('click', this._showForm.bind(this))
+
+        //Recreate markers for parsed data
+        this._recreateDataMarkers();
+
     }
 
     //retrieve coordinates from mapEvent + set markers at form submit
@@ -59,6 +73,7 @@ class App {
         const notes = inputNotes.value;
         const duration = +inputDuration.value;
         let exercise;
+        const coords = this.mapEvent.latlng
         
         //function to check every input
         const validInput = (...values) =>
@@ -86,8 +101,7 @@ class App {
                 return alert(notPositiveInt)
             }
 
-            exercise = new Walk(distance, duration, notes)
-            console.log(exercise);
+            exercise = new Walk(coords, distance, duration, notes)
         }
 
         if (type === "run" || type === "cycle"){
@@ -102,11 +116,11 @@ class App {
             }
 
             if (type==='run'){
-                exercise = new Run(distance, duration, elevation, notes)
+                exercise = new Run(coords, distance, duration, elevation, notes)
             }
 
             if (type==='cycle'){
-                exercise = new Cycle(distance, duration, elevation, notes)
+                exercise = new Cycle(coords, distance, duration, elevation, notes)
             }
         }
 
@@ -120,12 +134,15 @@ class App {
                 return alert(notPositiveInt)
             }
 
-            exercise = new Sport(duration, sportName, notes)
+            exercise = new Sport(coords, duration, sportName, notes)
         }
 
-        //Save new class obj to public Array
+        //Save new class obj to public Array (adds onto Array parsed from LocalStorage)
         this.exercises.push(exercise)
         console.log(this.exercises);
+
+        //Save updated Array to LocalStorage
+        this._saveLocalStorage();
 
         //////////Add marker
         this._createPopupDescription.bind(this)
@@ -137,8 +154,9 @@ class App {
             L.popup({
                 maxWidth: 350,
                 className: `popup--${type}`
-            })
-        ).setPopupContent(this._createPopupDescription(exercise))
+            }).setLatLng([lat,lng])
+        )
+        .setPopupContent(this._createPopupDescription(exercise))
         .openPopup();
 
         
@@ -193,7 +211,7 @@ class App {
     _renderExercisePanel(exercise){
         let htmlContent =  
         `<li>
-        <div class="exercisePanel">
+        <div class="exercisePanel exercise-panel-${exercise.type}" data-id="${exercise.id}">
             <h2>${exercise.emoji} ${this._capitaliseWord(exercise.type)}</h2>
             <div>
                 <span>📏Dist.: </span>
@@ -225,7 +243,7 @@ class App {
         if (exercise.type ==='sport') {
             htmlContent = 
             `<li>
-            <div class="exercisePanel">
+            <div class="exercisePanel exercise-panel-${exercise.type} data-id="${exercise.id}">
                 <h2>${exercise.emoji} ${this._capitaliseWord(exercise.sportName)}</h2>
                 <div>
                     <span>⌚Time: </span>
@@ -245,7 +263,7 @@ class App {
         }
             
         
-
+        //inset Exercise Panel
         form.insertAdjacentHTML('afterend', htmlContent);
     }
 
@@ -262,6 +280,87 @@ class App {
         let options = {day:'numeric', month: 'numeric', year: 'numeric', }
         return `${exercise.emoji} ${(exercise.type==='sport')? this._capitaliseWord(exercise.sportName) : this._capitaliseWord(exercise.type)}, ${exercise.date.toLocaleString('en-GB', options)}`
     }
+
+    _moveToClickedPanel(e){
+        //Identify which panel is clicked using closest CSS class
+        const exercisePanel = e.target.closest('.exercisePanel')
+        if (!exercisePanel) return;
+        //retrieve ID of element using HTML attribute assigned
+        const panelId = exercisePanel.getAttribute('data-id');
+
+        //serach in array for matching ID
+        const foundExerciseObj = this.exercises.find(exercise => exercise.id === panelId)
+        console.log(foundExerciseObj);
+
+        //Retrieve coordinates from found object
+        const {lat, lng} = foundExerciseObj.coords;
+
+        //setview to the found object
+        this.map.setView([lat,lng], 12, {
+            'animate': true,
+            'pan': {
+                'duration': 1
+            }
+        })
+    }
+
+    _saveLocalStorage(){
+        localStorage.setItem('exercises', JSON.stringify(this.exercises))
+    }
+
+    _retrieveLocalStorage(){
+        this.data = JSON.parse(localStorage.getItem('exercises'));
+        console.log(this.data);
+    }
+
+    _recreateExerciseObjs(){
+        let exerciseObj
+        const dataObjArray = [];
+
+        //Recreate Class objects for every object retrieved from Local Storage
+        this.data.forEach(function(object){
+            console.log(object.type);
+
+            if (object.type === 'walk'){
+                exerciseObj = new Walk(object.coords, object.distance, object.duration, object.notes)
+            }
+            if (object.type === 'run'){
+                exerciseObj = new Run(object.coords, object.distance, object.duration, object.elevation, object.notes)
+            }
+            if (object.type === 'cycle'){
+                exerciseObj = new Cycle(object.coords, object.distance, object.duration, object.elevation, object.notes)
+            }
+            if (object.type === 'sport'){
+                exerciseObj = new Sport(object.coords, object.duration, object.sportName, object.notes)
+            }
+            dataObjArray.push(exerciseObj)
+        })
+        console.log(dataObjArray);
+        
+        // setting it to exercises, now they are clickable for setPan. Form submits adds to this.
+        this.exercises = dataObjArray
+
+    }
+
+    _recreateDataMarkers(){
+        console.log(this.exercises);
+        console.log(this.map);
+        this.exercises.forEach(exercise => {
+            const {lat} = exercise.coords;
+            const {lng} = exercise.coords;
+            this._renderExercisePanel(exercise);
+            L.marker([lat,lng]).addTo(this.map)
+            .bindPopup(
+                L.popup({
+                    maxWidth: 350,
+                    className: `popup--${exercise.type}`
+                }).setLatLng([lat,lng])
+                )
+                .setPopupContent(this._createPopupDescription(exercise))
+                .openPopup();   
+            })
+    }
+
 }
 //class objects
 
@@ -270,12 +369,16 @@ class App {
 class Exercise {
 //public field
 date = new Date();
+//generate random id
+id = String(Date.now()) + String(Math.trunc(Math.random()*9999))
 
-//constructor
-    constructor(duration, notes){
+    //constructor
+    constructor(coords, duration, notes){
+        this.coords = coords
         this.duration = duration;
         this.notes = notes;
     }
+
     //Prototype methods for all Class objects to use
     _getEmoji(exercise){
         let emoji;
@@ -326,14 +429,13 @@ date = new Date();
         }
         return emoji
     }
-
 }
 
 //Child classes
 class Walk extends Exercise {
     type = 'walk';
-    constructor(distance, duration, notes){
-        super(duration, notes)
+    constructor(coords, distance, duration, notes){
+        super(coords, duration, notes)
         this.distance = distance;
         this.emoji = this._getEmoji(this.type)
     }
@@ -342,8 +444,8 @@ class Walk extends Exercise {
 
 class Run extends Exercise {
     type = 'run';
-    constructor(distance, duration, elevation, notes){
-        super(duration, notes)
+    constructor(coords, distance, duration, elevation, notes){
+        super(coords, duration, notes)
         this.distance = distance;
         this.elevation = elevation
         this.emoji = this._getEmoji(this.type)
@@ -354,8 +456,8 @@ class Run extends Exercise {
 
 class Cycle extends Exercise {
     type = 'cycle';
-    constructor(distance, duration, elevation, notes){
-        super(duration, notes)
+    constructor(coords, distance, duration, elevation, notes){
+        super(coords, duration, notes)
         this.distance = distance;
         this.elevation = elevation
         this.emoji = this._getEmoji(this.type)
@@ -365,8 +467,8 @@ class Cycle extends Exercise {
 
 class Sport extends Exercise {
     type = 'sport';
-    constructor(duration, sportName, notes){
-        super(duration, notes)
+    constructor(coords, duration, sportName, notes){
+        super(coords, duration, notes)
         this.sportName = sportName;
         this.emoji = this._getEmoji(this.type)
     }

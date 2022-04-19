@@ -1,3 +1,10 @@
+:root{
+    --color-walk: rgb(40, 153, 252);
+    --color-run: rgb(255, 192, 31);
+    --color-cycle:rgb(32, 210, 100);
+    --color-sport:rgb(219, 42, 42);
+}
+
 *{
     box-sizing: border-box;
 }
@@ -38,10 +45,68 @@ footer{
 #map{
     height: 100%;
     background-color: grey;
-    width:70%
+    width:70%;
 }
 ul{
-    padding: 0
+    padding: 0;
+}
+
+form {
+    border: 1px solid white;
+    padding: 6px;
+    border-radius: 8px;
+    width:95%;
+    margin: 20px auto;
+    box-shadow: 1px 3px 10px 5px rgba(0,0,0,0.5);
+    max-width: 400px;
+}
+
+.input-row label {
+    display: inline-block;
+    clear: left;
+    text-align: right;
+    width:70px;
+}
+
+.inputGrid{
+    display: grid;
+    grid-template-areas: "input1 input2"
+                        "input3 input4"
+}
+
+.input-noteArea{
+    margin: 5px;
+    width: 100%;
+    display: block;
+}
+
+#note-label{
+    display: block;
+    width: 100%;
+    position: relative;
+    left: 30px;
+    margin-bottom: 5px;
+}
+
+.input-row:nth-child(1){
+    grid-area: input1;
+}
+
+.input-row:nth-child(2){
+    grid-area: input2;
+}
+
+.input-row:nth-child(3){
+    grid-area: input3;
+}
+
+.input-row:nth-child(4){
+    grid-area: input4;
+}
+form button {
+    grid-area: button;
+    width: 80px;
+    margin: 10px;
 }
 
 form option,
@@ -49,35 +114,39 @@ form select{
     color: black;
 }
 
-input {
+input,
+select {
+    display: inline-block;
     width: 80px;
     margin-left: 5px;
 }
 
 textarea{
-    width: 70%;
-    max-width: 200px;
-    max-height: 70px;
-    height: 50px;
+    width: 80%;
     vertical-align: top;
+    margin-left: 5px;
+    height: 60px;
+    max-width:90%
 }
 
 .input-row{
-    border: 1px solid white;
     margin: 5px;
 }
 
 ul {
-    margin: 0
+    margin: 0;
 }
 
 .exercisePanel{
-    border: 1px solid white;
     padding: 6px;
     border-radius: 8px;
     width:80%;
     margin: 20px auto;
     box-shadow: 1px 3px 10px 5px rgba(0,0,0,0.5);
+}
+
+.exercisePanel:hover{
+    box-shadow: 1px 4px 10px 8px rgba(0,0,0,0.8);
 }
 
 .exercisePanel h2{
@@ -103,19 +172,35 @@ ul {
 }
 
 .popup--walk .leaflet-popup-content-wrapper{
-    border-left: 9px solid rgb(46, 46, 198);
+    border-left: 7px solid var(--color-walk)
 }
 
 .popup--run .leaflet-popup-content-wrapper{
-    border-left: 9px solid rgb(255, 192, 31);
+    border-left: 7px solid var(--color-run)
 }
 
 .popup--cycle .leaflet-popup-content-wrapper{
-    border-left: 9px solid rgb(30, 171, 84);
+    border-left: 7px solid var(--color-cycle);
 }
 
 .popup--sport .leaflet-popup-content-wrapper{
-    border-left: 9px solid rgb(159, 38, 38);
+    border-left: 7px solid var(--color-sport);
+}
+
+.exercise-panel-walk{
+    border: 1px solid var(--color-walk)
+}
+
+.exercise-panel-run{
+    border: 1px solid var(--color-run)
+}
+
+.exercise-panel-cycle{
+    border: 1px solid var(--color-cycle)
+}
+
+.exercise-panel-sport {
+    border: 1px solid var(--color-sport)
 }
 
 @media screen and (max-width:700px) {
