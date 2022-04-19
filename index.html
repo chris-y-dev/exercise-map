@@ -19,14 +19,17 @@
 <body>
     <div id="map"></div>
     <section class="sidebar">
+        <h1>Exercise-map by Chris</h1>
         <div class="sidebar-container" id="panels-container">
-            <ul>
-                <form id="form" class="hidden">
-                    <div class="inputGrid">
-                        <div class="input-row">
-                            <label>Activity: </label>
-                            <select id="inputType">
-                                <option value="walk">Walk</option>
+           
+            <form id="form" class="hidden">
+                <h3>Add Exercise</h3>
+                <button type="button" id="form-close-button">X</button>
+                <div class="inputGrid">
+                    <div class="input-row">
+                        <label>Activity: </label>
+                        <select id="inputType">
+                            <option value="walk">Walk</option>
                                 <option value="run">Run</option>
                                 <option value="cycle">Cycle</option>
                                 <option value="sport">Sport</option>
@@ -54,7 +57,7 @@
                         <textarea placeholder="Enter note (eg: Took no breaks" id="inputNotes"></textarea>
                     </div>
                 <button>Add</button>
-            </form>
+                </form>
             <!-- INSERT workout blocks here 
             <li>
                 <div class="exercisePanel">
@@ -82,11 +85,11 @@
             </li>
         -->
         
-    </ul>
-        <footer>
-            <p>Created by Chris</p>
-        </footer>
-    </div>
+        
+            <footer>
+                <p>Created by Chris</p>
+            </footer>
+        </div>
     </section>
 </body>
 </html>

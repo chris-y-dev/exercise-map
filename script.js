@@ -7,6 +7,7 @@ const inputNotes = document.getElementById('inputNotes')
 const inputElevation = document.getElementById('inputElevation')
 const inputSport = document.getElementById('inputSport')
 const sidebarContainer = document.getElementById('panels-container')
+const formCloseButton = document.getElementById('form-close-button')
 //Create App class
 
 ///////////////App logic - Code Architecture
@@ -24,6 +25,10 @@ class App {
     
         //set marker at submit form
         form.addEventListener('submit', this._submitForm.bind(this))
+        formCloseButton.addEventListener('click', function(e){
+            form.classList.add('hidden');
+        })
+
         //change for fields depending on type value
         inputType.addEventListener('change', this._changeForm.bind(this))
         //event listner for exercise panels
@@ -32,7 +37,6 @@ class App {
         //retrieve data at start from localstorage
         this._retrieveLocalStorage();
         this._recreateExerciseObjs();
-        
     }
 
     //methods
@@ -214,17 +218,17 @@ class App {
         <div class="exercisePanel exercise-panel-${exercise.type}" data-id="${exercise.id}">
             <h2>${exercise.emoji} ${this._capitaliseWord(exercise.type)}</h2>
             <div>
-                <span>📏Dist.: </span>
+                <span class="panel-category">📏Dist.: </span>
                 <span>${exercise.distance}</span>
                 <span>km</span>
             </div>
             <div>
-                <span>⏲Time: </span>
+                <span class="panel-category">⏲Time: </span>
                 <span>${exercise.duration}</span>
                 <span>min</span>
             </div>
             <div>
-                <span>💨Speed</span>
+                <span class="panel-category">💨Speed: </span>
                 <span>${this._calcSpeed(exercise)}</span>
                 <span>km/h</span>
             </div>`
@@ -232,7 +236,7 @@ class App {
         if (exercise.type ==='run' || exercise.type ==='cycle'){
             const elevGainAndSpeed = `
             <div>
-                <span>🗻Elev.: </span>
+                <span class="panel-category">🗻Elev.: </span>
                 <span>${exercise.elevation}</span>
                 <span>m</span>
             </div>`
@@ -246,7 +250,7 @@ class App {
             <div class="exercisePanel exercise-panel-${exercise.type} data-id="${exercise.id}">
                 <h2>${exercise.emoji} ${this._capitaliseWord(exercise.sportName)}</h2>
                 <div>
-                    <span>⌚Time: </span>
+                    <span class="panel-category">⌚Time: </span>
                     <span>${exercise.duration}</span>
                     <span>min</span>
                 </div>`
@@ -255,7 +259,7 @@ class App {
         if (exercise.notes !== ''){
             htmlContent +=
             `<div>
-            <span>📝Notes: </span>
+            <span class="panel-category">📝Notes: </span>
             <span>${exercise.notes}</span>
             </div>
             </div>
@@ -268,7 +272,7 @@ class App {
     }
 
     _calcSpeed(exercise){
-        return (exercise.distance / (exercise.duration/60)).toFixed(2)
+        return (exercise.distance / (exercise.duration/60)).toFixed(1)
     }
 
     _capitaliseWord(string){
@@ -296,7 +300,7 @@ class App {
         const {lat, lng} = foundExerciseObj.coords;
 
         //setview to the found object
-        this.map.setView([lat,lng], 12, {
+        this.map.setView([lat,lng], 13, {
             'animate': true,
             'pan': {
                 'duration': 1
@@ -356,8 +360,7 @@ class App {
                     className: `popup--${exercise.type}`
                 }).setLatLng([lat,lng])
                 )
-                .setPopupContent(this._createPopupDescription(exercise))
-                .openPopup();   
+                .setPopupContent(this._createPopupDescription(exercise))  
             })
     }
 
