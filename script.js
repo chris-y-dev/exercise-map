@@ -21,7 +21,9 @@ class App {
     map;
     mapEvent;
     exercises = [];
+    markers = [];
     data;
+   
 
     //mandatory constructor - These will be set immediately upon app load
     constructor(){
@@ -57,14 +59,91 @@ class App {
         this._retrieveLocalStorage();
         this._recreateExerciseObjs();
 
+        sidebarContainer.addEventListener('click', this._getCloseBtnDOMElement.bind(this))
+            
+        //     if (exercisePanelCloseButton){
+        //         exercisePanelCloseButton.addEventListener('click', function(){
+        //             'clicked'
+        //         })
+        //     }
+        // })
+
     }
 
     //methods
-    _deleteExercisePanel(e){
-        const exercisePanel = e.target.closest('.exercisePanel')
-        if (!exercisePanel) return;
+   
+
+    _getCloseBtnDOMElement(){
+        if (!document.getElementById('exercise-panel-close-btn')) return;
+
+        exercisePanelCloseButton = document.getElementById('exercise-panel-close-btn')
+        // console.log('DOM get created for closebtn');
+        // console.log(exercisePanelCloseButton);
+       
+        this._createCloseBtnEventListener();
+
+    }
+
+    _createCloseBtnEventListener(){
         
-        console.log(e.target);
+
+        if (!exercisePanelCloseButton) return;
+
+        //Event listener + Identify ID 
+        exercisePanelCloseButton.addEventListener('click', this._deleteExercisePanel.bind(this))
+
+        //add hidden class
+
+        
+
+        //remove from exercises array
+      
+
+        //save to localStorage
+    }
+
+    _deleteExercisePanel(e){
+        let deleteItemID;
+
+       //retrieve data-ID (attribute)
+       deleteItemID = e.target.closest('.exercisePanel').getAttribute('data-id')
+       console.log(deleteItemID);
+
+        //found Item
+        const [foundObj] = this.exercises.filter(exercise=> exercise.id === deleteItemID)
+
+        const {lat, lng} = foundObj.coords
+
+        //Delete marker + update marker array
+        const newMarkersArray = [];
+        let selectedMarker;
+
+        console.log(this.markers);
+        this.markers.forEach(function(marker){
+            console.log(marker.id);
+            if (marker.id === deleteItemID){
+                selectedMarker = marker
+            } else {
+                newMarkersArray.push(marker.id)
+            }
+        })
+
+        this.map.removeLayer(selectedMarker)
+
+        // this.map.removeLayer(marker)
+        // this.markers = newMarkersArray;
+
+
+
+        //     console.log(filteredArray);
+
+    //    //Filter and delete Array
+    //     const filteredArray = this.exercises.filter(exercise=> exercise.id != deleteItemID)
+    //     console.log(filteredArray);
+
+    //     //update localStorage Array
+    //     this.exercises = filteredArray;
+    //     localStorage.setItem('exercises', filteredArray)
     }
 
 
@@ -180,15 +259,35 @@ class App {
         const {lat} = this.mapEvent.latlng;
         const {lng} = this.mapEvent.latlng;
         console.log(lat, lng);
-        L.marker([lat, lng]).addTo(this.map)
-        .bindPopup(
+        
+        const myMarker = L.marker([lat,lng], {draggable: false})
+
+        myMarker.id = exercise.id;
+
+        myMarker.bindPopup(
             L.popup({
-                maxWidth: 350,
-                className: `popup--${type}`
-            }).setLatLng([lat,lng])
-        )
-        .setPopupContent(this._createPopupDescription(exercise))
-        .openPopup();
+            maxWidth: 350,
+            className: `popup--${type}`
+            }))
+
+        myMarker.setPopupContent(this._createPopupDescription(exercise))
+
+        this.map.addLayer(myMarker);
+        this.markers.push(myMarker)
+        console.log(myMarker);
+        myMarker.openPopup();
+        
+        
+        // this.map.addLayer(markerID)
+        // L.marker([lat, lng]).addTo(this.map)
+        // .bindPopup(
+        //     L.popup({
+        //         maxWidth: 350,
+        //         className: `popup--${type}`
+        //     }).setLatLng([lat,lng])
+        // )
+        // .setPopupContent(this._createPopupDescription(exercise))
+        // .openPopup();
 
         
 
@@ -200,7 +299,8 @@ class App {
         this._renderExercisePanel(exercise);
 
         this._getCloseBtnDOMElement();
-        this._createCloseBtnEventListener()
+        this._createCloseBtnEventListener.bind(this)
+        this._createCloseBtnEventListener();
     }
 
     //Change input fields depending on type of exercise
@@ -233,7 +333,7 @@ class App {
 
         //show form on click
         form.classList.remove('hidden')
-        inputDuration.focus();
+        inputDistance.focus();
     }
 
     _clearFormFields(){
@@ -301,7 +401,7 @@ class App {
         //inset Exercise Panel
         form.insertAdjacentHTML('afterend', htmlContent);
         this._getCloseBtnDOMElement()
-        this._createCloseBtnEventListener()
+        this._createCloseBtnEventListener();
     }
 
     _calcSpeed(exercise){
@@ -346,6 +446,8 @@ class App {
     }
 
     _retrieveLocalStorage(){
+        if (!(localStorage.getItem('exercises'))) return;
+
         this.data = JSON.parse(localStorage.getItem('exercises'));
     }
 
@@ -387,39 +489,40 @@ class App {
             const {lat} = exercise.coords;
             const {lng} = exercise.coords;
             this._renderExercisePanel(exercise);
-            L.marker([lat,lng]).addTo(this.map)
-            .bindPopup(
+
+
+            const myMarker = L.marker([lat,lng], {draggable: false})
+
+            myMarker.id = exercise.id;
+    
+            myMarker.bindPopup(
                 L.popup({
-                    maxWidth: 350,
-                    className: `popup--${exercise.type}`
-                }).setLatLng([lat,lng])
-                )
-                .setPopupContent(this._createPopupDescription(exercise))  
+                maxWidth: 350,
+                className: `popup--${exercise.type}`
+                }))
+    
+            myMarker.setPopupContent(this._createPopupDescription(exercise))
+    
+            this.map.addLayer(myMarker);
+            this.markers.push(myMarker)
+            console.log(myMarker);
+            myMarker.openPopup();
+
+            // L.marker([lat,lng]).addTo(this.map)
+            // .bindPopup(
+            //     L.popup({
+            //         maxWidth: 350,
+            //         className: `popup--${exercise.type}`
+            //     }).setLatLng([lat,lng])
+            //     )
+            //     .setPopupContent(this._createPopupDescription(exercise))  
             })
         this._getCloseBtnDOMElement()
-        this._createCloseBtnEventListener()
+        this._createCloseBtnEventListener.bind(this)
     }
 
     
-    _getCloseBtnDOMElement(){
-        exercisePanelCloseButton = document.getElementById('exercise-panel-close-btn');
-       
-    }
-
-    _createCloseBtnEventListener(){
-        if (!exercisePanelCloseButton) return;
-        exercisePanelCloseButton.addEventListener('click', function(){
-            console.log('close button clicked');
-        })
-
-        //retrieve ID
-
-        //add hidden class
-
-        //remove from exercises array
-
-        //save to localStorage
-    }
+    
 
 }
 //class objects
