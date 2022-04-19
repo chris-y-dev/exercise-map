@@ -14,24 +14,29 @@
    crossorigin=""></script>
     <link rel="stylesheet" href='./styles.css'/>
     <script defer src="script.js" type="text/javascript"></script>
-    <title>Activities Map by Chris</title>
+    <title>Exercise Map by Chris.Y</title>
 </head>
 <body>
     <div id="modal" class="modal">
         <div class="modal-content">
           <h1>Welcome to Chris' Exercise map!</h1>
-          <h2>Instructions</h2>
+          <h3>Instructions</h3>
           <ol>
             <li>Pick a location on the map</li>
-            <li>A form will appear. Enter the exercise details in this form</li>
-            <li>On submission, exercise marker will be inserted onto map</li>
-            <li>Use panels in sidebar to navigate through all your entries!</li>
+            <li>A form will appear. Enter your exercise details in this form</li>
+            <li>On submission, an exercise marker will be inserted onto the map</li>
+            <li>Use panels in the sidebar to navigate through all your entries!</li>
           </ol>
           <h3>Developed by Chris Yuen</h3>
             <ul>
                 <li class="footer-small">Portfolio: <a href="https://chrisyuen.info/">chrisyuen.info</a></li>
                 <li>Social Media: <a href="https://www.linkedin.com/in/chrisyuen976">LinkedIn</a>, <a href="https://github.com/chrisyuen976">Github</a></li>
                 <li class="footer-small">Technologies used: JavaScript, Leaflet, Geolocation</li>
+            </ul>
+            <h3>Upcoming updates</h3>
+            <ul>
+                <li>Finish item delete function. Target completion date: <strong>21/04</strong></li>
+                <li>Make code look prettier</li>
             </ul>
             <p class="close-modal">Click anywhere to begin</p>
         </div>
@@ -41,7 +46,7 @@
     <div id="map"></div>
     <section class="sidebar">
         <h1>Exercise-map by Chris</h1>
-        <p class="sub-heading-small"><a href="https://chrisyuen.info/">chrisyuen.info</a>, <a href="https://github.com/chrisyuen976">Github</a></p>
+        <p class="sub-heading-small"><a href="https://chrisyuen.info/">chrisyuen.info</a>, <a href="https://github.com/chrisyuen976">Github</a> <span class="sub-heading-instruction" id="instructionsBtn">Instructions</span></p>
         
         <div class="sidebar-container" id="panels-container">   
             <form id="form" class="hidden">
@@ -66,7 +71,7 @@
                             <input placeholder="min" id="inputDuration"/>
                         </div>
                         <div class="input-row hidden">
-                            <label>Elev Gain: </label>
+                            <label>Elev.Gain: </label>
                             <input placeholder="meters" id="inputElevation"/>
                         </div>
                         <div class="input-row hidden">
@@ -80,32 +85,7 @@
                     </div>
                 <button class="form-submit-button">Add</button>
                 </form>
-            <!-- INSERT workout blocks here 
-            <li>
-                <div class="exercisePanel">
-                    <h2>Workout Title</h2>
-                    <div>
-                        <span>⚽</span>
-                        <span>Soccer</span>
-                        <span>km</span>
-                    </div>
-                    <div>
-                        <span>⌚</span>
-                        <span>90</span>
-                        <span>min</span>
-                    </div>
-                    <div>
-                        <span>Speed/Pace</span>
-                        <span>5.7</span>
-                        <span>km/min</span>
-                    </div>
-                    <div>
-                        <span>📝</span>
-                        <span>It was fun</span>
-                    </div>
-                </div>
-            </li>
-        -->
+            <!-- INSERT workout blocks here-->
         
         </div>
     </section>

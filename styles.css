@@ -60,6 +60,16 @@ link:hover{
     color: var(--theme-orange)
 }
 
+.sub-heading-instruction{
+    color: red;
+    float: right;
+}
+
+.sub-heading-instruction:hover{
+    cursor: pointer;
+    color: white;
+}
+
 .sidebar-container{
     height: 100%;
     white-space: normal;
@@ -108,7 +118,7 @@ form {
     display: block;
     width: 100%;
     position: relative;
-    left: 10px;
+    left: 24px;
     margin-bottom: 5px;
 }
 
@@ -309,6 +319,7 @@ textarea{
     form{
         display: inline-block;
         min-width: 300px;
+        max-width: 320px;
         height: 97%;
     }
 

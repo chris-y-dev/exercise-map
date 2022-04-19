@@ -8,6 +8,8 @@ const inputElevation = document.getElementById('inputElevation')
 const inputSport = document.getElementById('inputSport')
 const sidebarContainer = document.getElementById('panels-container')
 const formCloseButton = document.getElementById('form-close-button')
+const instructionsButton = document.getElementById('instructionsBtn')
+let exercisePanelCloseButton;
 
 const modal = document.getElementById('modal')
 //Create App class
@@ -30,8 +32,14 @@ class App {
             modal.style.display = "block"
         })
 
+        //close modal when click
         window.addEventListener('click', function(){
             modal.style.display = "none"
+        })
+        //Open modal for instructions
+        instructionsButton.addEventListener('click', function(){
+            console.log('click');
+            location.reload();
         })
     
         //set marker at submit form
@@ -52,6 +60,13 @@ class App {
     }
 
     //methods
+    _deleteExercisePanel(e){
+        const exercisePanel = e.target.closest('.exercisePanel')
+        if (!exercisePanel) return;
+        
+        console.log(e.target);
+    }
+
 
     _getPosition(){
         if(navigator.geolocation){   
@@ -70,7 +85,7 @@ class App {
         //render the map
         this.map = L.map('map').setView(coords, 13);
         
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(this.map);
         
@@ -184,6 +199,8 @@ class App {
 
         this._renderExercisePanel(exercise);
 
+        this._getCloseBtnDOMElement();
+        this._createCloseBtnEventListener()
     }
 
     //Change input fields depending on type of exercise
@@ -260,8 +277,9 @@ class App {
         if (exercise.type ==='sport') {
             htmlContent = 
             `<li>
-            <div class="exercisePanel exercise-panel-${exercise.type} data-id="${exercise.id}">
-                <h2>${exercise.emoji} ${this._capitaliseWord(exercise.sportName)}</h2>
+            <div class="exercisePanel exercise-panel-${exercise.type}" data-id="${exercise.id}">
+            <h2>${exercise.emoji} ${this._capitaliseWord(exercise.sportName)}</h2>
+                <button type="button" id="exercise-panel-close-btn">&times;</button>
                 <div>
                     <span class="panel-category">⌚Time: </span>
                     <span>${exercise.duration}</span>
@@ -278,10 +296,12 @@ class App {
             </div>
             </li>`
         }
-            
         
+       
         //inset Exercise Panel
         form.insertAdjacentHTML('afterend', htmlContent);
+        this._getCloseBtnDOMElement()
+        this._createCloseBtnEventListener()
     }
 
     _calcSpeed(exercise){
@@ -327,12 +347,13 @@ class App {
 
     _retrieveLocalStorage(){
         this.data = JSON.parse(localStorage.getItem('exercises'));
-        console.log(this.data);
     }
 
     _recreateExerciseObjs(){
         let exerciseObj
         const dataObjArray = [];
+
+        if(!this.data) return;
 
         //Recreate Class objects for every object retrieved from Local Storage
         this.data.forEach(function(object){
@@ -375,6 +396,29 @@ class App {
                 )
                 .setPopupContent(this._createPopupDescription(exercise))  
             })
+        this._getCloseBtnDOMElement()
+        this._createCloseBtnEventListener()
+    }
+
+    
+    _getCloseBtnDOMElement(){
+        exercisePanelCloseButton = document.getElementById('exercise-panel-close-btn');
+       
+    }
+
+    _createCloseBtnEventListener(){
+        if (!exercisePanelCloseButton) return;
+        exercisePanelCloseButton.addEventListener('click', function(){
+            console.log('close button clicked');
+        })
+
+        //retrieve ID
+
+        //add hidden class
+
+        //remove from exercises array
+
+        //save to localStorage
     }
 
 }
@@ -393,6 +437,7 @@ id = String(Date.now()) + String(Math.trunc(Math.random()*9999))
         this.coords = coords
         this.duration = duration;
         this.notes = notes;
+  
     }
 
     //Prototype methods for all Class objects to use
@@ -445,6 +490,7 @@ id = String(Date.now()) + String(Math.trunc(Math.random()*9999))
         }
         return emoji
     }
+
 }
 
 //Child classes
