@@ -17,14 +17,36 @@
     <title>Activities Map by Chris</title>
 </head>
 <body>
+    <div id="modal" class="modal">
+        <div class="modal-content">
+          <h1>Welcome to Chris' Exercise map!</h1>
+          <h2>Instructions</h2>
+          <ol>
+            <li>Pick a location on the map</li>
+            <li>A form will appear. Enter the exercise details in this form</li>
+            <li>On submission, exercise marker will be inserted onto map</li>
+            <li>Use panels in sidebar to navigate through all your entries!</li>
+          </ol>
+          <h3>Developed by Chris Yuen</h3>
+            <ul>
+                <li class="footer-small">Portfolio: <a href="https://chrisyuen.info/">chrisyuen.info</a></li>
+                <li>Social Media: <a href="https://www.linkedin.com/in/chrisyuen976">LinkedIn</a>, <a href="https://github.com/chrisyuen976">Github</a></li>
+                <li class="footer-small">Technologies used: JavaScript, Leaflet, Geolocation</li>
+            </ul>
+            <p class="close-modal">Click anywhere to begin</p>
+        </div>
+       
+      </div>
+
     <div id="map"></div>
     <section class="sidebar">
         <h1>Exercise-map by Chris</h1>
-        <div class="sidebar-container" id="panels-container">
-           
+        <p class="sub-heading-small"><a href="https://chrisyuen.info/">chrisyuen.info</a>, <a href="https://github.com/chrisyuen976">Github</a></p>
+        
+        <div class="sidebar-container" id="panels-container">   
             <form id="form" class="hidden">
                 <h3>Add Exercise</h3>
-                <button type="button" id="form-close-button">X</button>
+                <button type="button" id="form-close-button">&times;</button>
                 <div class="inputGrid">
                     <div class="input-row">
                         <label>Activity: </label>
@@ -56,7 +78,7 @@
                         <label id="note-label">Notes: </label>
                         <textarea placeholder="Enter note (eg: Took no breaks" id="inputNotes"></textarea>
                     </div>
-                <button>Add</button>
+                <button class="form-submit-button">Add</button>
                 </form>
             <!-- INSERT workout blocks here 
             <li>
@@ -85,11 +107,9 @@
             </li>
         -->
         
-        
-            <footer>
-                <p>Created by Chris</p>
-            </footer>
         </div>
     </section>
+    
+    
 </body>
 </html>

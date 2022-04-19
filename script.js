@@ -8,6 +8,8 @@ const inputElevation = document.getElementById('inputElevation')
 const inputSport = document.getElementById('inputSport')
 const sidebarContainer = document.getElementById('panels-container')
 const formCloseButton = document.getElementById('form-close-button')
+
+const modal = document.getElementById('modal')
 //Create App class
 
 ///////////////App logic - Code Architecture
@@ -22,6 +24,15 @@ class App {
     //mandatory constructor - These will be set immediately upon app load
     constructor(){
         this._getPosition();
+
+         //load introductory modal
+         window.addEventListener('load', function(){
+            modal.style.display = "block"
+        })
+
+        window.addEventListener('click', function(){
+            modal.style.display = "none"
+        })
     
         //set marker at submit form
         form.addEventListener('submit', this._submitForm.bind(this))
@@ -37,6 +48,7 @@ class App {
         //retrieve data at start from localstorage
         this._retrieveLocalStorage();
         this._recreateExerciseObjs();
+
     }
 
     //methods
@@ -217,6 +229,7 @@ class App {
         `<li>
         <div class="exercisePanel exercise-panel-${exercise.type}" data-id="${exercise.id}">
             <h2>${exercise.emoji} ${this._capitaliseWord(exercise.type)}</h2>
+            <button type="button" id="exercise-panel-close-btn">&times;</button>
             <div>
                 <span class="panel-category">📏Dist.: </span>
                 <span>${exercise.distance}</span>
