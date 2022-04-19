@@ -30,7 +30,6 @@ class App {
     constructor(){
         this._getPosition();
     
-
          //load introductory modal
          window.addEventListener('load', function(){
             modal.style.display = "block"
@@ -395,6 +394,8 @@ class App {
         const foundExerciseObj = this.exercises.find(exercise => exercise.id === panelId)
         console.log(foundExerciseObj);
 
+        if(foundExerciseObj===undefined)return; ////prevents bugs when panel removed
+
         //Retrieve coordinates from found object
         const {lat, lng} = foundExerciseObj.coords;
 
@@ -426,9 +427,10 @@ class App {
     }
 
     _retrieveMarkersLocalStorage(){
-        if (!(localStorage.getItem('markers'))) return;
+        // if (!(localStorage.getItem('markers'))) return;
 
-        this.markerData = JSON.parse(localStorage.getItem('markers'));
+        this.markerData = localStorage.getItem('markers');
+        console.log(this.markerData);
     }
 
     _recreateExerciseObjs(){

@@ -43,7 +43,7 @@ link:hover{
     width: 30%;
     height: 100vh;
     padding: 40px 5px;
-    overflow-y: auto;
+    overflow-y:scroll;
 }
 
 .sidebar h1{
