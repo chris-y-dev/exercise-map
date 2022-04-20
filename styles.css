@@ -393,11 +393,11 @@ textarea{
 
 @media screen and (max-height: 600px){
     .sidebar{
-        height: 70%
+        height: 80%
     }
 
     #map{
-        height:30%;
+        height:20%;
     }
 }
 
