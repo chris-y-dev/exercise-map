@@ -165,7 +165,7 @@ form h3{
 .form-submit-button {
     grid-area: button;
     padding: 5px 25px;
-    margin: 10px;
+    margin: 5px 10px 10px 5px;
     background-color: var(--theme-orange);
     border: none;
     border-radius: 5px;
@@ -302,39 +302,51 @@ textarea{
     }
 
     .sidebar{
-        max-height: 350px;
+        height:50%;
         padding: 0px 10px 20px 10px;
         overflow-x: scroll;
-        overflow-y: hidden;
         white-space: nowrap;
     }
 
     .sidebar-container{
         display: inherit;
         flex-direction: row;
-        height: 300px;
         align-items: flex-start;
     }
 
     form{
         display: inline-block;
-        min-width: 300px;
-        max-width: 320px;
-        height: 97%;
+        min-width:90vw;
+        height: 100%;
+        max-width: auto;
     }
 
     #form-close-button {
-        top: -30px;
+        top: -22px;
+        clear: left;
     }
 
-    form h3{
-        margin: 5px 0 10px 0;
+    form p{
+        margin: 5px 0 0 0;
+        font-weight: bold;
     }
-
 
     input,
     select {
-        width: 80px;
+        width: 70px;
+    }
+
+    .inputGrid{
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        }
+
+    .input-row{
+        min-width: 30%;
+        margin: 5px 0px;
     }
 
     .input-row label,
@@ -345,17 +357,15 @@ textarea{
     }
 
     #note-label{
-        left:0px;  
+        display: inline-block;
+        margin:0;
+        left: -4px;
     }
 
     textarea{
-        width: 180px;
+        width: 70%;
         display: inline-block;
-        height: 45px
-    }
-
-    .inputGrid{
-        display:inline-block;
+        height: 30px
     }
 
     footer{
@@ -370,13 +380,24 @@ textarea{
 
     .exercisePanel{
         white-space: normal;
-        min-height: 220px;
+        min-height: 80%;
         min-width: 180px;
         margin: 0px 10px;
     }
 
     #map{
         width: 100%;
+    }
+}
+
+
+@media screen and (max-height: 600px){
+    .sidebar{
+        height: 70%
+    }
+
+    #map{
+        height:30%;
     }
 }
 
